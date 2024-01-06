@@ -5,12 +5,19 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import data from './data.js';
 import {Routes, Route, Link, useNavigate, Outlet} from 'react-router-dom';
 import Detail from './pages/Detail.js';
+import axios from 'axios';
 
 function App() {
 
-  let [cat] = useState(data);
+  let [cat, setCat] = useState(data);
 
   let navigate = useNavigate();
+
+  let [count, setCount] = useState(1);
+
+  let [load, setLoad] = useState(false);
+
+  let [button, setButton] = useState(true);
 
   return (
     <div className="App">
@@ -39,15 +46,43 @@ function App() {
                 </>
               })
             }
+            <div>
+              {
+                load == true ? <div>상품을 로드 중입니다</div> : null
+              }
+              {
+                button == true ?
+                <button onClick={()=>{
+                  setCount(++count);
+                  setLoad(true);
+                  console.log(count)
+                  if(count == 3){
+                    setButton(false)
+                  }
+                  axios.get('https://codingapple1.github.io/shop/data'+ count +'.json')
+                  .then((data)=>{
+                    let copy = [...cat, ...data.data]
+                    setCat(copy)
+                    setLoad(false);
+                  })
+                  .catch(()=>{
+                    setLoad(false);
+                  })
+                }}>더보기</button> : null
+              }
+
+              <button style={{margin : "5px"}}
+                onClick={ () => {
+                let copy = [...cat];
+                copy.sort((a, b) => a.title.localeCompare(b.title));
+                setCat(copy);
+              }}>가나다 정렬</button>
+            </div>
             </div>
           </div>
         </>} />
 
-        {
-          cat.map(function(a, i){
-            return <Route path={'/detail/' + i} element={<Detail cat = {cat[i]} i = {i}></Detail>} />
-          })
-        }    
+        <Route path={'/detail/:id'} element={<Detail cat = {cat}></Detail>} />
 
         {/* nested routes */}
         <Route path='/mypage' element={<About></About>} >
@@ -71,12 +106,12 @@ function App() {
 
 function Product(props){
   return(
-    <div className="col-md-4" onClick={ () => { props.navigate('/detail/' + props.i) }}>
-      <img src={process.env.PUBLIC_URL + "/img/ㄱㅇㅇ" + (props.i + 1) +".jpg"} width="80%"/>
+    <div className="col-md-4" onClick={ () => { props.navigate('/detail/' + (props.cat.id)) }}>
+      <img src={process.env.PUBLIC_URL + "https://codingapple1.github.io/shop/shoes" + (props.cat.id + 1) +".jpg"} width="80%"/>
       <h4>{props.cat.title}</h4>
-      <p>{props.cat.cute}</p>
+      <p>{props.cat.price}</p>
     </div>
-  );
+  ); 
 }
 
 function About(){
