@@ -6,6 +6,7 @@ import data from './data.js';
 import {Routes, Route, Link, useNavigate, Outlet} from 'react-router-dom';
 import Detail from './pages/Detail.js';
 import axios from 'axios';
+import Cart from './pages/Cart.js'
 
 function App() {
 
@@ -27,7 +28,7 @@ function App() {
           <Navbar.Brand href="/" className='nav-title'>세구상점</Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link href="/">Home</Nav.Link>
-            <Nav.Link href="/detail">Cart</Nav.Link>
+            <Nav.Link href="/cart">Cart</Nav.Link>
             <Nav.Link href="/mypage">Mypage</Nav.Link>
           </Nav>
         </Container>
@@ -82,7 +83,7 @@ function App() {
           </div>
         </>} />
 
-        <Route path={'/detail/:id'} element={<Detail cat = {cat}></Detail>} />
+        <Route path={'/detail/:id'} element={<Detail cat = {cat} navigate = {navigate}></Detail>} />
 
         {/* nested routes */}
         <Route path='/mypage' element={<About></About>} >
@@ -97,6 +98,8 @@ function App() {
           <h1 style={{fontWeight : "bold"}}>
             이 페이지는 없는 페이지입니다.</h1>
           </div>} />
+        
+        <Route path='/cart' element={<Cart></Cart>}/>
         
       </Routes>
       
