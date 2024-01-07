@@ -25,10 +25,10 @@ function App() {
 
       <Navbar data-bs-theme="dark" className='store-nav'>
         <Container>
-          <Navbar.Brand href="/" className='nav-title'>세구상점</Navbar.Brand>
+          <Navbar.Brand onClick={()=>{navigate("/")}} className='nav-title'>세구상점</Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link href="/">Home</Nav.Link>
-            <Nav.Link href="/cart">Cart</Nav.Link>
+            <Nav.Link onClick={()=>{navigate("/")}}>Home</Nav.Link>
+            <Nav.Link onClick={()=>{navigate("/cart")}}>Cart</Nav.Link>
             <Nav.Link href="/mypage">Mypage</Nav.Link>
           </Nav>
         </Container>

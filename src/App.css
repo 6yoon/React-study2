@@ -41,3 +41,18 @@
   opacity: 1;
   transition: all 0.5s;
 }
+
+.button{
+  background-color: #fff;
+  font-weight: bold;
+  border: 1px solid #a3a3a3;
+  color: #a3a3a3;
+  border-radius: 5px;
+}
+
+td:nth-child(4){
+  width: 19%;
+}
+td:nth-child(5){
+  width: 10%;
+}
