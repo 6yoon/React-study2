@@ -50,13 +50,6 @@
   border-radius: 5px;
 }
 
-td:nth-child(4){
-  width: 19%;
-}
-td:nth-child(5){
-  width: 10%;
-}
-
 .watched{
   border: #000 1px solid;
   text-align: center;
@@ -70,4 +63,15 @@ td:nth-child(5){
 
 .watched h5{
   padding-top: 10px;
+}
+
+.x{
+  font-size: 10px;
+  font-weight: bold;
+  position: absolute;
+  border: #a3a3a3 1px solid;
+  padding: 0px 7px 2px 7px;
+  right: 5px;
+  top: 5px;
+  cursor: pointer;
 }

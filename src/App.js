@@ -22,23 +22,36 @@ function App() {
 
   let [watched, setWatched] = useState([])
 
+  let [stop, setStop] = useState(true)
+
   useEffect(()=>{
     localStorage.setItem('watched', JSON.stringify( watched ))
   },[])
 
+  
+
   return (
     <div className="App">
-      <div className='watched'>
+      {
+        stop == true ?
+        <div className='watched'>
         <h5 style={{fontWeight : "bold"}}>최근 본 상품</h5>
+        <span className='x' onClick={(e)=>{e.stopPropagation(); setStop(false)}}>x</span>
         <hr></hr>
         {
           watched.map(function(a, i){
             return <><img src={process.env.PUBLIC_URL + "https://codingapple1.github.io/shop/shoes" + (a + 1) +".jpg"} width="80%"></img>
-              <p style={{fontWeight : "bold"}}>{cat[i].title}</p>
+              <p style={{fontWeight : "bold"}}>{cat.find((item)=>item.id == a).title}</p>
             </>
           })
         }
-      </div>
+      </div> :
+      <div className='watched'>
+      <h5 style={{fontWeight : "bold"}}>최근 본 상품</h5>
+        <span onClick={(e)=>{e.stopPropagation(); setStop(true)}} style={{cursor: "pointer"}}>▽</span>
+    </div>
+      }
+      
       <Navbar data-bs-theme="dark" className='store-nav'>
         <Container>
           <Navbar.Brand onClick={()=>{navigate("/")}} className='nav-title'>세구상점</Navbar.Brand>
