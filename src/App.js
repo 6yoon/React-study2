@@ -1,9 +1,9 @@
 import {Button, Container, Nav, Navbar, Row, Col} from 'react-bootstrap';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import data from './data.js';
-import {Routes, Route, Link, useNavigate, Outlet} from 'react-router-dom';
+import {Routes, Route, Link, useNavigate, Outlet, json} from 'react-router-dom';
 import Detail from './pages/Detail.js';
 import axios from 'axios';
 import Cart from './pages/Cart.js'
@@ -20,9 +20,25 @@ function App() {
 
   let [button, setButton] = useState(true);
 
+  let [watched, setWatched] = useState([])
+
+  useEffect(()=>{
+    localStorage.setItem('watched', JSON.stringify( watched ))
+  },[])
+
   return (
     <div className="App">
-
+      <div className='watched'>
+        <h5 style={{fontWeight : "bold"}}>최근 본 상품</h5>
+        <hr></hr>
+        {
+          watched.map(function(a, i){
+            return <><img src={process.env.PUBLIC_URL + "https://codingapple1.github.io/shop/shoes" + (a + 1) +".jpg"} width="80%"></img>
+              <p style={{fontWeight : "bold"}}>{cat[i].title}</p>
+            </>
+          })
+        }
+      </div>
       <Navbar data-bs-theme="dark" className='store-nav'>
         <Container>
           <Navbar.Brand onClick={()=>{navigate("/")}} className='nav-title'>세구상점</Navbar.Brand>
@@ -43,7 +59,7 @@ function App() {
             {
               cat.map(function(a, i){
                 return <>
-                <Product cat = {cat[i]} i = {i} navigate = {navigate}></Product>
+                <Product cat = {cat[i]} i = {i} navigate = {navigate} watched = {watched}></Product>
                 </>
               })
             }
@@ -109,7 +125,12 @@ function App() {
 
 function Product(props){
   return(
-    <div className="col-md-4" onClick={ () => { props.navigate('/detail/' + (props.cat.id)) }}>
+    <div className="col-md-4" onClick={ () => { props.navigate('/detail/' + (props.cat.id))
+      if(props.watched.indexOf(props.cat.id) > -1) props.watched.splice(props.watched.indexOf(props.cat.id),1)
+      props.watched.unshift(props.cat.id);
+      if(props.watched.length > 3) props.watched.pop()
+      localStorage.setItem('watched', JSON.stringify(props.watched))
+    }}>
       <img src={process.env.PUBLIC_URL + "https://codingapple1.github.io/shop/shoes" + (props.cat.id + 1) +".jpg"} width="80%"/>
       <h4>{props.cat.title}</h4>
       <p>{props.cat.price}</p>
