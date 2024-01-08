@@ -1,12 +1,18 @@
 import {Button, Container, Nav, Navbar, Row, Col} from 'react-bootstrap';
-import { useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import data from './data.js';
 import {Routes, Route, Link, useNavigate, Outlet, json} from 'react-router-dom';
-import Detail from './pages/Detail.js';
 import axios from 'axios';
-import Cart from './pages/Cart.js'
+import { useQuery } from '@tanstack/react-query';
+//import Detail from './pages/Detail.js'
+//import Cart from './pages/Cart.js'
+
+const Detail = lazy(()=>import('./pages/Detail.js'));
+const Cart = lazy(()=>import('./pages/Cart.js'));
+
+
 
 function App() {
 
@@ -25,10 +31,22 @@ function App() {
   let [stop, setStop] = useState(true)
 
   useEffect(()=>{
-    localStorage.setItem('watched', JSON.stringify( watched ))
+
+  })
+
+  useEffect(()=>{
+    if(watched.length < 0) localStorage.setItem('watched', JSON.stringify( watched ))
+    setWatched(JSON.parse(localStorage.getItem('watched')))
   },[])
 
-  
+  let result = useQuery({queryKey : ['a'],queryFn : ()=>{
+    return axios.get('https://codingapple1.github.io/userdata.json').then((a)=>{
+      return a.data
+    })
+  }})
+
+ 
+
 
   return (
     <div className="App">
@@ -41,7 +59,7 @@ function App() {
         {
           watched.map(function(a, i){
             return <><img src={process.env.PUBLIC_URL + "https://codingapple1.github.io/shop/shoes" + (a + 1) +".jpg"} width="80%"></img>
-              <p style={{fontWeight : "bold"}}>{cat.find((item)=>item.id == a).title}</p>
+              {/* <p style={{fontWeight : "bold"}}>{cat.find((item)=>item.id == a).title}</p> */}
             </>
           })
         }
@@ -60,9 +78,11 @@ function App() {
             <Nav.Link onClick={()=>{navigate("/cart")}}>Cart</Nav.Link>
             <Nav.Link href="/mypage">Mypage</Nav.Link>
           </Nav>
+          <Nav className='ms-auto'>반가워요 {result.isLoading ? '로딩 중' : result.data.name}</Nav>
         </Container>
       </Navbar>
 
+      <Suspense fallback={<div>loading...</div>}>
       <Routes>
         {/* 메인페이지 */}
         <Route path='/' element={<>
@@ -72,7 +92,7 @@ function App() {
             {
               cat.map(function(a, i){
                 return <>
-                <Product cat = {cat[i]} i = {i} navigate = {navigate} watched = {watched}></Product>
+                <Product cat = {cat[i]} i = {i} navigate = {navigate} watched = {watched} setWatched = {setWatched}></Product>
                 </>
               })
             }
@@ -85,15 +105,14 @@ function App() {
                 <button onClick={()=>{
                   setCount(++count);
                   setLoad(true);
-                  console.log(count)
                   if(count == 3){
                     setButton(false)
                   }
                   axios.get('https://codingapple1.github.io/shop/data'+ count +'.json')
                   .then((data)=>{
                     let copy = [...cat, ...data.data]
-                    setCat(copy)
-                    setLoad(false);
+                      setCat(copy);
+                      setLoad(false);
                   })
                   .catch(()=>{
                     setLoad(false);
@@ -112,7 +131,9 @@ function App() {
           </div>
         </>} />
 
-        <Route path={'/detail/:id'} element={<Detail cat = {cat} navigate = {navigate}></Detail>} />
+        <Route path={'/detail/:id'} element={
+            <Detail cat = {cat} navigate = {navigate} setCat = {setCat} setLoad ={setLoad}></Detail>
+        } />
 
         {/* nested routes */}
         <Route path='/mypage' element={<About></About>} >
@@ -131,6 +152,7 @@ function App() {
         <Route path='/cart' element={<Cart></Cart>}/>
         
       </Routes>
+      </Suspense>
       
     </div>
   );

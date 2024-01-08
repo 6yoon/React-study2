@@ -55,8 +55,8 @@
   text-align: center;
   width: 200px;
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: 100px;
+  left: 20px;
   background-color: #fff;
   z-index: 9999;
 }
