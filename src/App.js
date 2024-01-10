@@ -34,7 +34,6 @@ function App() {
 
   let [stop, setStop] = useState(true);
 
-
   useEffect(() => {});
 
   useEffect(() => {
@@ -199,6 +198,7 @@ function App() {
                         }}
                       >
                         가나다 정렬
+                      </button>
                     </div>
                   </div>
                 </div>
